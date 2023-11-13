@@ -3,11 +3,14 @@
 # Reminder for the user
 # "Note: To make the OLLAMA_MODEL variable available in your current shell, run this script with 'source' or '.' before its path."
 
+# ANSI color codes
+GREEN="\033[32m"
+NO_COLOR="\033[0m"
+
 # This script uses 'ollama list' to present a list of models to the user,
 # then prompts for a selection to set an environment variable with the chosen model's name.
-echo "current model $OLLAMA_MODEL"
 echo "Fetching list of models..."
-echo "--------------------------------------------------"
+echo "-------------------------------------------------------------------------"
 
 # Run 'ollama list' and capture the output, excluding the header
 model_list=$(ollama list | tail -n +2)
@@ -18,29 +21,38 @@ if [[ -z "$model_list" ]]; then
   exit 1
 fi
 
-# Display the model list to the user
-echo -e "NAME\tID\tSIZE\tMODIFIED"
-echo "$model_list"
-echo "--------------------------------------------------"
-
-# Create an array to hold the model names
-model_names=()
-while IFS= read -r line; do
+# Display the model list with numbering and highlight the current model in green
+echo -e "No.\tNAME\t\tID\t\tSIZE\t\tMODIFIED"
+i=1
+while read -r line; do
   model_name=$(echo "$line" | awk '{print $1}')
-  model_names+=("$model_name")
+  if [ "$model_name" = "$OLLAMA_MODEL" ]; then
+    # Highlight the current model in green
+    echo -e "${GREEN}$i.\t$line${NO_COLOR}"
+  else
+    echo -e "$i.\t$line"
+  fi
+  ((i++))
 done <<< "$model_list"
+echo "-------------------------------------------------------------------------"
+echo "0. unset OLLAMA_MODEL"
 
 # Prompt the user to select a model by number
-echo "Please select a model by entering the corresponding number:"
-select model_choice in "${model_names[@]}"; do
-  if [[ -n "$model_choice" ]]; then
-    # Set the OLLAMA_MODEL environment variable to the selected model name
-    export OLLAMA_MODEL=$model_choice
-    echo "You have selected the model: $OLLAMA_MODEL"
-    break
-  else
-    echo "Invalid selection. Please try again."
-  fi
-done
+read -p "Enter number: " selection
 
+# Check if the user entered 0
+if [ "$selection" -eq 0 ]; then
+    unset OLLAMA_MODEL
+    echo "OLLAMA_MODEL has been unset."
+else
+    selected_model=$(echo "$model_list" | sed -n "${selection}p" | awk '{print $1}')
 
+    # Validate selection and set the OLLAMA_MODEL environment variable
+    if [[ -n "$selected_model" ]]; then
+      export OLLAMA_MODEL=$selected_model
+      echo "You have selected the model: $OLLAMA_MODEL"
+    else
+      echo "Invalid selection. Please try again."
+    fi
+
+fi

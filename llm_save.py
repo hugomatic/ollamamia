@@ -6,16 +6,18 @@ import json
 
 if __name__ == "__main__":
 
+    # read the blocks in the file
     with open(sys.argv[1],'r') as f:
         blocks = json.load(f)
-
-    print('[S]ave [R]ename [D]elete [V]iew [C]ontext:')
 
     for block in blocks:
         name = block["name"]
         context = "".join(block["context"])
         text = "".join(block["code"])
+        if not text:
+            continue
         while True:
+            print('[S]ave [R]ename [D]elete [V]iew [C]ontext:')
             cmd = input(f'{name}? ').lower()
             if cmd == 's':
                 with open(name, 'w') as f:
