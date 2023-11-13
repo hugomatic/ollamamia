@@ -39,6 +39,10 @@ echo "0. unset OLLAMA_MODEL"
 
 # Prompt the user to select a model by number
 read -p "Enter number: " selection
+if [ -z "$selection" ]; then
+    echo "Cancelled. The current model is: \"$OLLAMA_MODEL\""
+    return
+fi
 
 # Check if the user entered 0
 if [ "$selection" -eq 0 ]; then
