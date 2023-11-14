@@ -7,16 +7,22 @@ import json
 extensions = [
   '.txt',
   '.json', 'js',
-  '.sh',
+  '.sh', '.bash',
   'Dockerfile',
   '.c', 'cpp', 'cxx', 'cc',
-  '.h', '.hh',
+  '.h', '.hh', '.hpp',
   '.py',
   '.csv',
   '.md',
-  '.rs',
+  '.rs', '.rb',
   '.lisp',
-  'CMakeLists'
+  'CMakeLists',
+  'java',
+  '.gitignore',
+  '.css', '.html',
+  '.sql',
+  '.service',
+  '.diff', '.patch'
 ]
 
 def find_file_name(text):
