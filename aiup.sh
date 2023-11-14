@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Reminder for the user
 # "Note: To make the OLLAMA_MODEL variable available in your current shell, run this script with 'source' or '.' before its path."
 
@@ -38,7 +36,9 @@ echo "-------------------------------------------------------------------------"
 echo "0. unset OLLAMA_MODEL"
 
 # Prompt the user to select a model by number
-read -p "Enter number: " selection
+echo -n "Enter number: " 
+read selection
+
 if [ -z "$selection" ]; then
     echo "Cancelled. The current model is: \"$OLLAMA_MODEL\""
     return
@@ -58,5 +58,4 @@ else
     else
       echo "Invalid selection. Please try again."
     fi
-
 fi
